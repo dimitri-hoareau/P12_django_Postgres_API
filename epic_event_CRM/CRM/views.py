@@ -1,14 +1,20 @@
 from rest_framework.viewsets import ModelViewSet
  
 from CRM.models import Client, Contract, Event
-from CRM.serializers import ClientSerializer, ContractSerializer, EventSerializer
+from CRM.serializers import ClientDetailSerializer, ClientListSerializer, ContractSerializer, EventSerializer
  
 class ClientViewSet(ModelViewSet):
  
-    serializer_class = ClientSerializer
+    serializer_class = ClientListSerializer
+    detail_serializer_class = ClientDetailSerializer
  
     def get_queryset(self):
         return Client.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return self.detail_serializer_class
+        return super().get_serializer_class()
 
 class ContractViewSet(ModelViewSet):
  
