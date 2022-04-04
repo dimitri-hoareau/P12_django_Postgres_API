@@ -1,5 +1,21 @@
 from django.db import models
+from django.contrib.auth.models import User
 
+
+class SalesStaff(models.Model):
+    full_name = models.CharField(max_length=255)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=255)
+
+class GestionStaff(models.Model):
+    full_name = models.CharField(max_length=255)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=255)
+
+class SupportStaff(models.Model):
+    full_name = models.CharField(max_length=255)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=255)
 
 class Client(models.Model):
 

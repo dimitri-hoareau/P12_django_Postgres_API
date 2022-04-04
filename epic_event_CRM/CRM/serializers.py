@@ -1,7 +1,27 @@
 from rest_framework.serializers import ModelSerializer
  
-from CRM.models import Client, Contract, Event
+from CRM.models import Client, Contract, Event, SalesStaff, GestionStaff, SupportStaff
+
+
+class SalesStaffSerializer(ModelSerializer):
  
+    class Meta:
+        model = SalesStaff
+        fields = ['id', 'full_name', 'user', 'phone']
+
+class GestionStaffSerializer(ModelSerializer):
+ 
+    class Meta:
+        model = GestionStaff
+        fields = ['id', 'full_name', 'user', 'phone']
+
+class SupportStaffSerializer(ModelSerializer):
+ 
+    class Meta:
+        model = SupportStaff
+        fields = ['id', 'full_name', 'user', 'phone']
+
+
 class ClientDetailSerializer(ModelSerializer):
  
     class Meta:

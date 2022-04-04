@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from CRM.views import ClientViewSet, ContractViewSet, EventViewSet
+from CRM.views import ClientViewSet, ContractViewSet, EventViewSet, SalesStaffViewSet, GestionStaffViewSet, SupportStaffViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
@@ -28,6 +28,9 @@ router = routers.SimpleRouter()
 router.register('client', ClientViewSet, basename='client')
 router.register('contract', ContractViewSet, basename='contract')
 router.register('event', EventViewSet, basename='event')
+router.register('sales_staff', SalesStaffViewSet, basename='sales_staff')
+router.register('gestion_staff', GestionStaffViewSet, basename='gestion_staff')
+router.register('support_staff', SupportStaffViewSet, basename='support_staff')
  
 urlpatterns = [
     path('admin/', admin.site.urls),
