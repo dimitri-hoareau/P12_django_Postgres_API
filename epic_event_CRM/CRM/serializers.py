@@ -22,17 +22,11 @@ class SupportStaffSerializer(ModelSerializer):
         fields = ['id', 'full_name', 'user', 'phone']
 
 
-class ClientDetailSerializer(ModelSerializer):
+class ClientSerializer(ModelSerializer):
  
     class Meta:
         model = Client
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'mobile', 'company_name', 'date_created', 'date_updated']
-
-class ClientListSerializer(ModelSerializer):
- 
-    class Meta:
-        model = Client
-        fields = ['id', 'first_name', 'last_name', 'email','company_name']
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'mobile', 'company_name', 'date_created', 'date_updated', 'sales_staff']
 
 class ContractSerializer(ModelSerializer):
  

@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
  
 from CRM.models import Client, Contract, Event, SalesStaff, GestionStaff, SupportStaff
-from CRM.serializers import ClientDetailSerializer, ClientListSerializer, ContractSerializer, EventSerializer, SalesStaffSerializer, GestionStaffSerializer, SupportStaffSerializer
+from CRM.serializers import ClientSerializer, ContractSerializer, EventSerializer, SalesStaffSerializer, GestionStaffSerializer, SupportStaffSerializer
 
 class GestionStaffViewSet (ModelViewSet):
  
@@ -25,18 +25,13 @@ class SalesStaffViewSet(ModelViewSet):
     def get_queryset(self):
         return SalesStaff.objects.all()
  
+
 class ClientViewSet(ModelViewSet):
  
-    serializer_class = ClientListSerializer
-    detail_serializer_class = ClientDetailSerializer
+    serializer_class = ClientSerializer
  
     def get_queryset(self):
         return Client.objects.all()
-
-    def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return self.detail_serializer_class
-        return super().get_serializer_class()
 
 class ContractViewSet(ModelViewSet):
  
