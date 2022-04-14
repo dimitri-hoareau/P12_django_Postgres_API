@@ -56,6 +56,17 @@ class Contract(models.Model):
     def __str__(self):
         return self.name
 
+
+class EventStatus(models.Model):
+
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        if self.active == True:
+            return "status : active"
+        return "status : inactive"
+
+
 class Event(models.Model):
 
     name = models.CharField(max_length=255)
@@ -65,22 +76,11 @@ class Event(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     support_staff = models.ForeignKey(to=SupportStaff, on_delete=models.CASCADE, null=True)
+    event_status = models.ForeignKey(to=EventStatus, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name
 
-class EventStatus(models.Model):
-    STATUS_CHOICES = (
-        ('PENDING', 'Pending'),
-        ('CLOSED', 'Closed'),
-        ('NOT_STARTED', 'Not started'),
-    )
 
-    status = models.CharField(max_length=11, choices=STATUS_CHOICES)
-    event = models.OneToOneField(
-        Event,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
 
 
