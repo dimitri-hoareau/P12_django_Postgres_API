@@ -1,7 +1,8 @@
 from cgitb import reset
 from multiprocessing import Event
+from multiprocessing.connection import Client
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from .models import SalesStaff, GestionStaff, SupportStaff, Event
+from .models import SalesStaff, GestionStaff, SupportStaff, Event, Client, Contract
 
 
 class FindUserStatus(): 
@@ -29,24 +30,36 @@ class FindUserStatus():
 class ClientIsAuthorOrReadOnly(BasePermission):
 
     def has_permission(self, request, view):
+
+        user_status = FindUserStatus.find_user_status(request.user)
+
+        if request.method == 'POST':
+            return user_status == "gestion_staff"
+        
         return True
 
     def has_object_permission(self, request, view, obj):
 
         user_status = FindUserStatus.find_user_status(request.user)
-        print(user_status)
-        # faire avec exist qui renvoit un bool
-        # salesStaff = SalesStaff.objects.filter(client=obj.id)
-        # for staff in SalesStaff:
-        #     if request.user == staff.user:
-        #         is_sales_staff = True
 
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        if  request.method in SAFE_METHODS :
+        if user_status == 'gestion_staff':
             return True
-        # return obj.author == request.user
-        return True
+
+        elif request.method in SAFE_METHODS :
+            return True
+
+        elif request.method == 'PUT':
+            event_sales_staff = 'first_turn'
+            try:
+                event_sales_staff = obj.sales_staff
+            except:
+                pass
+            if event_sales_staff == 'first_turn':
+                return True
+            return str(event_sales_staff) == str(request.user)
+
+        else:
+            return user_status == 'gestion_staff'
 
 class ContractIsAuthorOrReadOnly(BasePermission):
 
@@ -85,10 +98,14 @@ class EventIsAuthorOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         user_status = FindUserStatus.find_user_status(request.user)
 
-        if  request.method in SAFE_METHODS :
+        if user_status == 'gestion_staff':
+            return True
+
+        elif  request.method in SAFE_METHODS :
             return True
             
-        elif request.method == 'PUT':
+        elif request.method == 'PUT' and user_status == 'support_staff':
+
             event_support_staff = 'first_turn'
             try:
                 event_support_staff = obj.support_staff
@@ -97,6 +114,22 @@ class EventIsAuthorOrReadOnly(BasePermission):
             if event_support_staff == 'first_turn':
                 return True
             return str(event_support_staff) == str(request.user)
+
+        elif request.method == 'PUT' and user_status == 'sales_staff':
+
+            client_event_sales_staff = 'first_turn'
+            try:
+                client_event_sales_staff = obj.client
+            except:
+                pass
+            if client_event_sales_staff == 'first_turn':
+                return True
+     
+            request_user_clients = SalesStaff.objects.filter(user=request.user)
+            sales_staff_client = Client.objects.filter(sales_staff=request_user_clients[0])
+            is_event_attributed_to_user_client = sales_staff_client.filter(id=client_event_sales_staff.id).exists()
+
+            return is_event_attributed_to_user_client
 
         else:
             return user_status == 'gestion_staff'

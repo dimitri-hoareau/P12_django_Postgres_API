@@ -6,26 +6,6 @@ from CRM.models import Client, Contract, Event, SalesStaff, GestionStaff, Suppor
 from CRM.serializers import ClientSerializer, ContractSerializer, EventSerializer, SalesStaffSerializer, GestionStaffSerializer, SupportStaffSerializer
 
 
-def find_user_status(request_user):
-
-    def check_user_status(model, request_user, user_status):
-        
-        queryset = model.objects.all()
-
-        for user in queryset:
-            if request_user == user:
-                return "sales_staff"
-        return None
-
-    sales_staff = check_user_status(SalesStaff, request_user, "sales_staff")
-    if sales_staff is None:
-        support_staff = check_user_status(SupportStaff, request_user, "support_staff")
-        if support_staff is None:
-            return "gestion_staff"
-        return support_staff
-    return sales_staff
-
-
 
 class GestionStaffViewSet (ModelViewSet):
  
