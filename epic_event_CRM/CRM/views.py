@@ -42,6 +42,12 @@ class ClientViewSet(ModelViewSet):
         print(self.request.user)
 
         obj = Client.objects.all()
+        client_name = self.request.GET.get('client_name')
+        client_email = self.request.GET.get('client_email')
+        if client_name is not None:
+            obj = obj.filter(last_name=client_name)
+        if client_email is not None:
+            obj = obj.filter(email=client_email)
         self.check_object_permissions(self.request, obj)
         return obj
 
@@ -52,6 +58,22 @@ class ContractViewSet(ModelViewSet):
  
     def get_queryset(self):
         obj = Contract.objects.all()
+        client_name = self.request.GET.get('client_name')
+        client_email = self.request.GET.get('client_email')
+        contract_date = self.request.GET.get('contract_date')
+        contract_amount = self.request.GET.get('contract_amount')
+
+        if client_name is not None:
+            client = Client.objects.filter(last_name=client_name)
+            obj = obj.filter(client__in=client)
+        if client_email is not None:
+            client = Client.objects.filter(email=client_email)
+            obj = obj.filter(client__in=client)
+        if contract_date is not None:
+            obj = obj.filter(date_created=contract_date)
+        if contract_amount is not None:
+            obj = obj.filter(amount=contract_amount)
+
         self.check_object_permissions(self.request, obj)
         return obj
 
@@ -62,5 +84,19 @@ class EventViewSet(ModelViewSet):
  
     def get_queryset(self):
         obj = Event.objects.all()
+        client_name = self.request.GET.get('client_name')
+        client_email = self.request.GET.get('client_email')
+        event_date = self.request.GET.get('event_date')
+
+        if client_name is not None:
+            client = Client.objects.filter(last_name=client_name)
+            obj = obj.filter(client__in=client)
+        if client_email is not None:
+            client = Client.objects.filter(email=client_email)
+            obj = obj.filter(client__in=client)
+        if event_date is not None:
+            obj = obj.filter(event_date=event_date)
+
+
         self.check_object_permissions(self.request, obj)
         return obj
