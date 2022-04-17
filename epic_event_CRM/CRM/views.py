@@ -50,7 +50,6 @@ class ContractViewSet(ModelViewSet):
     serializer_class = ContractSerializer
     permission_classes = [IsAuthenticated,ContractIsAuthorOrReadOnly]
  
-
     def get_queryset(self):
         obj = Contract.objects.all()
         self.check_object_permissions(self.request, obj)

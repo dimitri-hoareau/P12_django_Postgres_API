@@ -1,6 +1,7 @@
 from cgitb import reset
 from multiprocessing import Event
 from multiprocessing.connection import Client
+from tkinter.messagebox import QUESTION
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from .models import SalesStaff, GestionStaff, SupportStaff, Event, Client, Contract
 
@@ -64,24 +65,41 @@ class ClientIsAuthorOrReadOnly(BasePermission):
 class ContractIsAuthorOrReadOnly(BasePermission):
 
     def has_permission(self, request, view):
+        user_status = FindUserStatus.find_user_status(request.user)
+        authorized_users_to_post = user_status in ['gestion_staff','sales_staff']
+        print(user_status)
+        if request.method == 'POST':
+            return authorized_users_to_post
+        
         return True
 
     def has_object_permission(self, request, view, obj):
-
-        authorized_user = ['gestion_staff', 'sales_staff']
-
         user_status = FindUserStatus.find_user_status(request.user)
-        print(user_status)
-        print(request.method)
-        print(SAFE_METHODS)
-
-        if user_status in authorized_user:
-            print("ok")
-
-        if  request.method in SAFE_METHODS :
+        if user_status == 'gestion_staff':
             return True
-        # return obj.author == request.user
-        return True
+
+        elif  request.method in SAFE_METHODS :
+            return True
+            
+        elif request.method == 'PUT' and user_status == 'sales_staff':
+
+            client_event_sales_staff = 'first_turn'
+            try:
+                client_event_sales_staff = obj.client
+            except:
+                pass
+            if client_event_sales_staff == 'first_turn':
+                return True
+     
+            request_user_clients = SalesStaff.objects.filter(user=request.user)
+            sales_staff_client = Client.objects.filter(sales_staff=request_user_clients[0])
+            is_contract_attributed_to_user_client = sales_staff_client.filter(id=client_event_sales_staff.id).exists()
+
+            return is_contract_attributed_to_user_client
+
+        else:
+            return user_status == 'gestion_staff'
+
 
 
 class EventIsAuthorOrReadOnly(BasePermission):
