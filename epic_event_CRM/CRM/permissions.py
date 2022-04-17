@@ -33,9 +33,9 @@ class ClientIsAuthorOrReadOnly(BasePermission):
     def has_permission(self, request, view):
 
         user_status = FindUserStatus.find_user_status(request.user)
-
+        authorized_users_to_post = user_status in ['gestion_staff','sales_staff']
         if request.method == 'POST':
-            return user_status == "gestion_staff"
+            return authorized_users_to_post
         
         return True
 
@@ -67,7 +67,6 @@ class ContractIsAuthorOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         user_status = FindUserStatus.find_user_status(request.user)
         authorized_users_to_post = user_status in ['gestion_staff','sales_staff']
-        print(user_status)
         if request.method == 'POST':
             return authorized_users_to_post
         
