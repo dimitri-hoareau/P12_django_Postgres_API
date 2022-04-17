@@ -11,7 +11,10 @@ class SalesStaff(models.Model):
     def save(self, *args, **kwargs):
         if GestionStaff.objects.filter(user=self.user).exists() or SupportStaff.objects.filter(user=self.user).exists():
             raise ValueError("This user has already a role")
+        self.user.is_staff = False
+        self.user.save()
         super(SalesStaff, self).save(*args, **kwargs)
+
 
     def __str__(self):
         return self.full_name
@@ -24,6 +27,8 @@ class GestionStaff(models.Model):
     def save(self, *args, **kwargs):
         if SalesStaff.objects.filter(user=self.user).exists() or SupportStaff.objects.filter(user=self.user).exists():
             raise ValueError("This user has already a role")
+        self.user.is_staff = True
+        self.user.save()
         super(GestionStaff, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -37,6 +42,8 @@ class SupportStaff(models.Model):
     def save(self, *args, **kwargs):
         if SalesStaff.objects.filter(user=self.user).exists() or GestionStaff.objects.filter(user=self.user).exists():
             raise ValueError("This user has already a role")
+        self.user.is_staff = False
+        self.user.save()
         super(SupportStaff, self).save(*args, **kwargs)
 
     def __str__(self):
