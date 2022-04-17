@@ -1,10 +1,11 @@
+import logging
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from CRM.permissions import ClientIsAuthorOrReadOnly, ContractIsAuthorOrReadOnly, EventIsAuthorOrReadOnly
  
 from CRM.models import Client, Contract, Event, SalesStaff, GestionStaff, SupportStaff
 from CRM.serializers import ClientSerializer, ContractSerializer, EventSerializer, SalesStaffSerializer, GestionStaffSerializer, SupportStaffSerializer
-
+logger = logging.getLogger(__name__)
 
 
 class GestionStaffViewSet (ModelViewSet):
@@ -39,7 +40,6 @@ class ClientViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated,ClientIsAuthorOrReadOnly]
  
     def get_queryset(self):
-        print(self.request.user)
 
         obj = Client.objects.all()
         client_name = self.request.GET.get('client_name')
