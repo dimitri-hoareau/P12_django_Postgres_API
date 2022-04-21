@@ -32,7 +32,7 @@ Then, you have to use postman or the curl command in your terminal
 
 Here is the url for the postman documentation of this API :  
 
-* [Documentation](https://documenter.getpostman.com/view/11769436/UVeCQU3C#d9b4769f-b738-414b-b981-57d2451ff273  
+* [Documentation](https://identity.getpostman.com/handover/multifactor?user=11769436&handover_token=6161bcfa-e566-43e7-b254-a69669e06e84)
 
 
 ## Contributing
