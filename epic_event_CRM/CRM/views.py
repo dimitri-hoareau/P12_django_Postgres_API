@@ -1,8 +1,7 @@
 import logging
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from CRM.permissions import ClientIsAuthorOrReadOnly, ContractIsAuthorOrReadOnly, EventIsAuthorOrReadOnly
- 
+from CRM.permissions import ClientIsAuthorOrReadOnly, ContractIsAuthorOrReadOnly, EventIsAuthorOrReadOnly 
 from CRM.models import Client, Contract, Event, SalesStaff, GestionStaff, SupportStaff
 from CRM.serializers import ClientSerializer, ContractSerializer, EventSerializer, SalesStaffSerializer, GestionStaffSerializer, SupportStaffSerializer
 logger = logging.getLogger(__name__)
@@ -11,7 +10,7 @@ logger = logging.getLogger(__name__)
 class GestionStaffViewSet (ModelViewSet):
  
     serializer_class = GestionStaffSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
  
     def get_queryset(self):
         return GestionStaff.objects.all()
@@ -19,7 +18,7 @@ class GestionStaffViewSet (ModelViewSet):
 class SupportStaffViewSet(ModelViewSet):
  
     serializer_class = SupportStaffSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
  
     def get_queryset(self):
         return SupportStaff.objects.all()
@@ -28,7 +27,7 @@ class SupportStaffViewSet(ModelViewSet):
 class SalesStaffViewSet(ModelViewSet):
  
     serializer_class = SalesStaffSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
  
     def get_queryset(self):
         return SalesStaff.objects.all()
@@ -40,7 +39,7 @@ class ClientViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated,ClientIsAuthorOrReadOnly]
  
     def get_queryset(self):
-
+        print(self.request.method)
         obj = Client.objects.all()
         client_name = self.request.GET.get('client_name')
         client_email = self.request.GET.get('client_email')
@@ -48,7 +47,7 @@ class ClientViewSet(ModelViewSet):
             obj = obj.filter(last_name=client_name)
         if client_email is not None:
             obj = obj.filter(email=client_email)
-        self.check_object_permissions(self.request, obj)
+        # self.check_object_permissions(self.request, obj)
         return obj
 
 class ContractViewSet(ModelViewSet):
@@ -57,6 +56,7 @@ class ContractViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated,ContractIsAuthorOrReadOnly]
  
     def get_queryset(self):
+
         obj = Contract.objects.all()
         client_name = self.request.GET.get('client_name')
         client_email = self.request.GET.get('client_email')
@@ -74,7 +74,6 @@ class ContractViewSet(ModelViewSet):
         if contract_amount is not None:
             obj = obj.filter(amount=contract_amount)
 
-        self.check_object_permissions(self.request, obj)
         return obj
 
 class EventViewSet(ModelViewSet):
@@ -97,6 +96,4 @@ class EventViewSet(ModelViewSet):
         if event_date is not None:
             obj = obj.filter(event_date=event_date)
 
-
-        self.check_object_permissions(self.request, obj)
         return obj

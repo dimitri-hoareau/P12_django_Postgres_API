@@ -50,13 +50,7 @@ class ClientIsAuthorOrReadOnly(BasePermission):
             return True
 
         elif request.method == 'PUT':
-            event_sales_staff = 'first_turn'
-            try:
-                event_sales_staff = obj.sales_staff
-            except:
-                pass
-            if event_sales_staff == 'first_turn':
-                return True
+            event_sales_staff = obj.sales_staff
             return str(event_sales_staff) == str(request.user)
 
         else:
@@ -82,14 +76,7 @@ class ContractIsAuthorOrReadOnly(BasePermission):
             
         elif request.method == 'PUT' and user_status == 'sales_staff':
 
-            client_event_sales_staff = 'first_turn'
-            try:
-                client_event_sales_staff = obj.client
-            except:
-                pass
-            if client_event_sales_staff == 'first_turn':
-                return True
-     
+            client_event_sales_staff = obj.client
             request_user_clients = SalesStaff.objects.filter(user=request.user)
             sales_staff_client = Client.objects.filter(sales_staff=request_user_clients[0])
             is_contract_attributed_to_user_client = sales_staff_client.filter(id=client_event_sales_staff.id).exists()
@@ -123,28 +110,18 @@ class EventIsAuthorOrReadOnly(BasePermission):
             
         elif request.method == 'PUT' and user_status == 'support_staff':
 
-            event_support_staff = 'first_turn'
-            try:
-                event_support_staff = obj.support_staff
-            except:
-                pass
-            if event_support_staff == 'first_turn':
-                return True
+            event_support_staff = obj.support_staff
             return str(event_support_staff) == str(request.user)
 
         elif request.method == 'PUT' and user_status == 'sales_staff':
 
-            client_event_sales_staff = 'first_turn'
-            try:
-                client_event_sales_staff = obj.client
-            except:
-                pass
-            if client_event_sales_staff == 'first_turn':
-                return True
-     
+            client_event_sales_staff = obj.client
             request_user_clients = SalesStaff.objects.filter(user=request.user)
             sales_staff_client = Client.objects.filter(sales_staff=request_user_clients[0])
             is_event_attributed_to_user_client = sales_staff_client.filter(id=client_event_sales_staff.id).exists()
+            print(client_event_sales_staff.id)
+            print(request_user_clients)
+            print(sales_staff_client)
 
             return is_event_attributed_to_user_client
 

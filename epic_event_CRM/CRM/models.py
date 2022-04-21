@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.forms import ValidationError
 
 
 class SalesStaff(models.Model):
@@ -8,9 +9,9 @@ class SalesStaff(models.Model):
             on_delete=models.CASCADE,)
     phone = models.CharField(max_length=255)
 
-    def save(self, *args, **kwargs):
+    def clean(self, *args, **kwargs):
         if GestionStaff.objects.filter(user=self.user).exists() or SupportStaff.objects.filter(user=self.user).exists():
-            raise ValueError("This user has already a role")
+            raise ValidationError("This user has already a role")
         self.user.is_staff = False
         self.user.save()
         super(SalesStaff, self).save(*args, **kwargs)
@@ -24,9 +25,9 @@ class GestionStaff(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=255)
 
-    def save(self, *args, **kwargs):
+    def clean(self, *args, **kwargs):
         if SalesStaff.objects.filter(user=self.user).exists() or SupportStaff.objects.filter(user=self.user).exists():
-            raise ValueError("This user has already a role")
+            raise ValidationError("This user has already a role")
         self.user.is_staff = True
         self.user.save()
         super(GestionStaff, self).save(*args, **kwargs)
@@ -39,9 +40,9 @@ class SupportStaff(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=255)
 
-    def save(self, *args, **kwargs):
+    def clean(self, *args, **kwargs):
         if SalesStaff.objects.filter(user=self.user).exists() or GestionStaff.objects.filter(user=self.user).exists():
-            raise ValueError("This user has already a role")
+            raise ValidationError("This user has already a role")
         self.user.is_staff = False
         self.user.save()
         super(SupportStaff, self).save(*args, **kwargs)

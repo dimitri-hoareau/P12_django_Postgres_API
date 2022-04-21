@@ -28,9 +28,9 @@ router = routers.SimpleRouter()
 router.register('client', ClientViewSet, basename='client')
 router.register('contract', ContractViewSet, basename='contract')
 router.register('event', EventViewSet, basename='event')
-router.register('sales_staff', SalesStaffViewSet, basename='sales_staff')
-router.register('gestion_staff', GestionStaffViewSet, basename='gestion_staff')
-router.register('support_staff', SupportStaffViewSet, basename='support_staff')
+# router.register('sales_staff', SalesStaffViewSet, basename='sales_staff')
+# router.register('gestion_staff', GestionStaffViewSet, basename='gestion_staff')
+# router.register('support_staff', SupportStaffViewSet, basename='support_staff')
  
 urlpatterns = [
     path('admin/', admin.site.urls),
