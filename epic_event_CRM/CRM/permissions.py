@@ -119,9 +119,6 @@ class EventIsAuthorOrReadOnly(BasePermission):
             request_user_clients = SalesStaff.objects.filter(user=request.user)
             sales_staff_client = Client.objects.filter(sales_staff=request_user_clients[0])
             is_event_attributed_to_user_client = sales_staff_client.filter(id=client_event_sales_staff.id).exists()
-            print(client_event_sales_staff.id)
-            print(request_user_clients)
-            print(sales_staff_client)
 
             return is_event_attributed_to_user_client
 
